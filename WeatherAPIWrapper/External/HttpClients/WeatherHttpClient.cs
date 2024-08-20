@@ -10,12 +10,12 @@ namespace WeatherAPIWrapper.External.HttpClients
         public WeatherHttpClient(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
-            _apiKey = config["WeatheAPI:Key"];
+            _apiKey = config["WeatherAPI:Key"];
         }
 
         public async Task<WeatherData> FetchWeatherDataAsync(string location)
         {
-            var response = await _httpClient.GetAsync($"v1/weather?location={location}&key={_apiKey}");
+            var response = await _httpClient.GetAsync($"{location}?key={_apiKey}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<WeatherData>();
         }
