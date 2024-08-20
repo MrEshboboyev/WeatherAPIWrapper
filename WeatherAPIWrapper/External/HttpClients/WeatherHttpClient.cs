@@ -1,4 +1,5 @@
-﻿using WeatherAPIWrapper.Models;
+﻿using Newtonsoft.Json;
+using WeatherAPIWrapper.Models;
 
 namespace WeatherAPIWrapper.External.HttpClients
 {
@@ -13,11 +14,19 @@ namespace WeatherAPIWrapper.External.HttpClients
             _apiKey = config["WeatherAPI:Key"];
         }
 
-        public async Task<WeatherData> FetchWeatherDataAsync(string location)
+        public async Task<dynamic> FetchWeatherDataAsync(string location)
         {
-            var response = await _httpClient.GetAsync($"{location}?key={_apiKey}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<WeatherData>();
+            var requestUrl = $"{location}?key={_apiKey}";
+            var response = await _httpClient.GetAsync(requestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Request failed with status code {response.StatusCode}");
+            }
+
+            var body = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<dynamic>(body);
         }
     }
 }

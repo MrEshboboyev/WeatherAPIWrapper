@@ -1,4 +1,5 @@
-﻿using WeatherAPIWrapper.External.HttpClients;
+﻿using Newtonsoft.Json;
+using WeatherAPIWrapper.External.HttpClients;
 using WeatherAPIWrapper.Models;
 using WeatherAPIWrapper.Services.IServices;
 
@@ -13,9 +14,12 @@ namespace WeatherAPIWrapper.Services
             _weatherHttpClient = weatherHttpClient;
         }
 
-        public async Task<WeatherData> GetWeatherDataAsync(string location)
+        public async Task<dynamic> GetWeatherDataAsync(string location)
         {
-            return await _weatherHttpClient.FetchWeatherDataAsync(location);
+            var weatherData = await _weatherHttpClient.FetchWeatherDataAsync(location);
+            var weatherDataAsJson = JsonConvert.SerializeObject(weatherData);
+            var weatherDataAsDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(weatherDataAsJson);
+            return weatherDataAsDictionary;
         }
     }
 }
