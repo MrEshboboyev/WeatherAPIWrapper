@@ -18,6 +18,13 @@ builder.Services.AddScoped<IWeatherService, WeatherService>();
 // adding AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// configure Redis
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetSection("RedisCache:Configuration").Value;
+    options.InstanceName = builder.Configuration.GetSection("RedisCache:InstanceName").Value;
+});
+
 // Register HttpClient with DI
 builder.Services.AddHttpClient<WeatherHttpClient>(client =>
 {
