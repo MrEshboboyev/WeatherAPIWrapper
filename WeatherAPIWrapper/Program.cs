@@ -21,7 +21,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 // configure Redis
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetSection("RedisCache:Configuration").Value;
+    options.Configuration = builder.Configuration.GetSection("RedisCache:ConnectionString").Value;
     options.InstanceName = builder.Configuration.GetSection("RedisCache:InstanceName").Value;
 });
 
