@@ -4,6 +4,6 @@ namespace WeatherAPIWrapper.Services.IServices
 {
     public interface IWeatherService
     {
-        Task<dynamic> GetWeatherDataAsync(string location);
+        Task<WeatherData> GetWeatherDataAsync(string location);
     }
 }

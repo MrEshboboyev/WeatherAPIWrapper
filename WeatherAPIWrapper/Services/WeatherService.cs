@@ -14,12 +14,9 @@ namespace WeatherAPIWrapper.Services
             _weatherHttpClient = weatherHttpClient;
         }
 
-        public async Task<dynamic> GetWeatherDataAsync(string location)
+        public async Task<WeatherData> GetWeatherDataAsync(string location)
         {
-            var weatherData = await _weatherHttpClient.FetchWeatherDataAsync(location);
-            var weatherDataAsJson = JsonConvert.SerializeObject(weatherData);
-            var weatherDataAsDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(weatherDataAsJson);
-            return weatherDataAsDictionary;
+            return await _weatherHttpClient.FetchWeatherDataAsync(location);
         }
     }
 }

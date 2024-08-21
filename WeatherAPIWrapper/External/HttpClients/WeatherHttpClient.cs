@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using WeatherAPIWrapper.Models;
+using WeatherAPIWrapper.Models.DTOs;
 
 namespace WeatherAPIWrapper.External.HttpClients
 {
@@ -7,14 +9,17 @@ namespace WeatherAPIWrapper.External.HttpClients
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
+        private readonly IMapper _mapper;
 
-        public WeatherHttpClient(HttpClient httpClient, IConfiguration config)
+        public WeatherHttpClient(HttpClient httpClient, IConfiguration config, 
+            IMapper mapper)
         {
             _httpClient = httpClient;
             _apiKey = config["WeatherAPI:Key"];
+            _mapper = mapper;
         }
 
-        public async Task<dynamic> FetchWeatherDataAsync(string location)
+        public async Task<WeatherData> FetchWeatherDataAsync(string location)
         {
             var requestUrl = $"{location}?key={_apiKey}";
             var response = await _httpClient.GetAsync(requestUrl);
@@ -26,7 +31,12 @@ namespace WeatherAPIWrapper.External.HttpClients
             }
 
             var body = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<dynamic>(body);
+            var weatherDataDto = JsonConvert.DeserializeObject<WeatherDataDto>(body);
+
+            // use AutoMapper to map DTO to domain model
+            var weatherData = _mapper.Map<WeatherData>(weatherDataDto);
+
+            return weatherData;
         }
     }
 }
