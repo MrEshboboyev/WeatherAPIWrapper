@@ -1,3 +1,4 @@
+using WeatherAPIWrapper;
 using WeatherAPIWrapper.External.HttpClients;
 using WeatherAPIWrapper.Services;
 using WeatherAPIWrapper.Services.IServices;
@@ -13,6 +14,9 @@ builder.Services.AddSwaggerGen();
 
 // adding services lifetime
 builder.Services.AddScoped<IWeatherService, WeatherService>();
+
+// adding AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Register HttpClient with DI
 builder.Services.AddHttpClient<WeatherHttpClient>(client =>
